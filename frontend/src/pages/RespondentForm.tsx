@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Calendar, Briefcase, CheckCircle2 } from "lucide-react";
+import { questions } from "../data/questions";
 
 export default function RespondentForm() {
   const navigate = useNavigate();
@@ -12,32 +12,21 @@ export default function RespondentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState("");
 
-  const jobStatuses = [
-    { value: "Staff", label: "Staff/Karyawan" },
-    { value: "Supervisor", label: "Supervisor/Team Lead" },
-    { value: "Manager", label: "Manager" },
-    { value: "Senior Manager", label: "Senior Manager" },
-    { value: "Director", label: "Director/VP" },
-    { value: "Executive", label: "C-Level Executive" },
-    { value: "Consultant", label: "Konsultan" },
-    { value: "Contractor", label: "Contractor/Freelancer" },
-    { value: "Intern", label: "Magang/Trainee" },
-  ];
-  
+
+
   useEffect(() => {
     const saved = localStorage.getItem("respondent");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (parsed.name) setName(parsed.name);
-          if (parsed.age) setAge(parsed.age);
-          if (parsed.status) setStatus(parsed.status);
-        } catch (err) {
-          console.error("Failed to parse respondent data:", err);
-        }
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.name) setName(parsed.name);
+        if (parsed.age) setAge(parsed.age);
+        if (parsed.status) setStatus(parsed.status);
+      } catch (err) {
+        console.error("Failed to parse respondent data:", err);
       }
+    }
   }, []);
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,17 +46,13 @@ export default function RespondentForm() {
     }
 
     try {
-      // Simulate loading for better UX
       setTimeout(() => {
-        // TODO: simpan data diri ke backend atau localStorage
         localStorage.setItem(
           "respondent",
           JSON.stringify({ name, age, status })
         );
-
-        // setelah submit → ke questionnaire
         navigate("/questionnaire");
-      }, 800);
+      }, 600);
     } catch (err) {
       setError("Terjadi kesalahan. Silakan coba lagi.");
       setIsSubmitting(false);
@@ -79,7 +64,6 @@ export default function RespondentForm() {
   };
 
   return (
-    
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-slate-50 to-blue-50 p-6">
       <div className="max-w-lg w-full">
         <div className="text-center mb-8 transform transition-all duration-500 ease-out">
@@ -87,12 +71,10 @@ export default function RespondentForm() {
             <User className="h-8 w-8 text-blue-600" />
           </div>
           <h1 className="mt-4 text-2xl sm:text-3xl font-bold text-gray-800">
-            Survey Kepuasan Kerja
+            Dini Sehat Mental
           </h1>
           <p className="mt-2 text-gray-600 text-sm leading-relaxed">
-            Evaluasi komprehensif untuk meningkatkan
-            <br />
-            kualitas lingkungan kerja perusahaan
+            Skrining Stres Kerja untuk Pekerja Perempuan
           </p>
         </div>
 
@@ -122,10 +104,12 @@ export default function RespondentForm() {
                 placeholder="Masukkan nama lengkap Anda"
                 value={name}
                 onChange={(e) => {
-                  const newName = e.target.value;
-                  setName(newName);
-                  const updated = { name: newName, age, status };
-                  localStorage.setItem("respondent", JSON.stringify(updated));
+                  setName(e.target.value);
+                  clearError();
+                  localStorage.setItem(
+                    "respondent",
+                    JSON.stringify({ name: e.target.value, age, status })
+                  );
                 }}
                 onFocus={() => setFocusedField("name")}
                 onBlur={() => setFocusedField("")}
@@ -158,12 +142,13 @@ export default function RespondentForm() {
                 placeholder="Masukkan usia Anda"
                 value={age}
                 onChange={(e) => {
-                const newAge = e.target.value;
-                setAge(newAge);
-                const updated = { name, age: newAge, status };
-                localStorage.setItem("respondent", JSON.stringify(updated));
-              }}
-
+                  setAge(e.target.value);
+                  clearError();
+                  localStorage.setItem(
+                    "respondent",
+                    JSON.stringify({ name, age: e.target.value, status })
+                  );
+                }}
                 onFocus={() => setFocusedField("age")}
                 onBlur={() => setFocusedField("")}
                 min="18"
@@ -182,56 +167,38 @@ export default function RespondentForm() {
           {/* Status Pekerjaan */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
-              Posisi/Level Pekerjaan
+              Posisi/Pekerjaan
             </label>
             <div className="relative">
               <Briefcase
-                className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 z-10 ${
+                className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
                   focusedField === "status" || status
                     ? "text-blue-600"
                     : "text-gray-400"
                 }`}
               />
-              <select
+              <input
+                type="text"
+                placeholder="Contoh: Staff Keuangan, Guru, Manajer"
                 value={status}
                 onChange={(e) => {
-                  const newStatus = e.target.value;
-                  setStatus(newStatus);
-                  const updated = { name, age, status: newStatus };
-                  localStorage.setItem("respondent", JSON.stringify(updated));
+                  setStatus(e.target.value);
+                  clearError();
+                  localStorage.setItem(
+                    "respondent",
+                    JSON.stringify({ name, age, status: e.target.value })
+                  );
                 }}
                 onFocus={() => setFocusedField("status")}
                 onBlur={() => setFocusedField("")}
-                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl transition-all duration-200 outline-none appearance-none bg-white ${
+                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl transition-all duration-200 outline-none ${
                   focusedField === "status"
                     ? "border-blue-500 ring-4 ring-blue-50"
                     : "border-gray-200 hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-50"
                 }`}
                 required
                 disabled={isSubmitting}
-              >
-                <option value="">Pilih posisi/level pekerjaan Anda</option>
-                {jobStatuses.map((job) => (
-                  <option key={job.value} value={job.value}>
-                    {job.label}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </div>
+              />
             </div>
           </div>
 
@@ -245,17 +212,17 @@ export default function RespondentForm() {
               <div className="flex items-start gap-2">
                 <span className="text-blue-600 font-semibold">•</span>
                 <span>
-                  109 pertanyaan komprehensif dalam 9 kategori evaluasi
+                  {questions.length} pertanyaan valid resmi untuk pekerja perempuan
                 </span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-blue-600 font-semibold">•</span>
-                <span>Estimasi waktu pengisian: 10–15 menit</span>
+                <span>Estimasi waktu pengisian: 8–12 menit</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-blue-600 font-semibold">•</span>
                 <span>
-                  Hasil membantu evaluasi dan perbaikan lingkungan kerja
+                  Hasil membantu evaluasi dan skrining kesehatan mental kerja
                 </span>
               </div>
             </div>
