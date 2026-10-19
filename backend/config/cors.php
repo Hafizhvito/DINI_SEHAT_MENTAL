@@ -17,6 +17,10 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
+        'https://streskerjaperempuan.com',
+        'https://www.streskerjaperempuan.com',
+        'https://api.streskerjaperempuan.com',
+        'http://streskerjaperempuan.com',
         'https://skriningstreskerjaperempuan.com',
         'https://www.skriningstreskerjaperempuan.com',
         'http://skriningstreskerjaperempuan.com',

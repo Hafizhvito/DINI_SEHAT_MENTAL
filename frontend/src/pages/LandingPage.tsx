@@ -162,7 +162,7 @@ export default function LandingPage() {
                 className="group inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-teal-500 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 <User className="h-5 w-5" />
-                Mulai Skrinning Sekarang
+                Mulai Skrining Sekarang
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <p className="text-sm text-slate-500 mt-3">
@@ -209,7 +209,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <div className="font-medium text-slate-800 text-sm">
-                      Skrinning Stres Kerja
+                      Skrining Stres Kerja
                     </div>
                     <div className="text-xs text-slate-600">
                       Evaluasi tingkat stres kerja

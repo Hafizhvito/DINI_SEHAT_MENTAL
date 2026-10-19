@@ -10,10 +10,12 @@ class DoctorSeeder extends Seeder
 {
     public function run(): void
     {
-        Doctor::create([
-            'name' => 'Dr. Tirta',
-            'username' => 'WIR',
-            'password' => Hash::make('admin123'),
-        ]);
+        Doctor::updateOrCreate(
+            ['username' => 'admin'],
+            [
+                'name' => 'Admin Dokter',
+                'password' => Hash::make('dokterhebat123!'),
+            ]
+        );
     }
 }
